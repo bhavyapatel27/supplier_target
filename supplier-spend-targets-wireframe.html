@@ -1,0 +1,1936 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CASCADE Plus — Supplier Spend Targets [WIREFRAME]</title>
+  <style>
+    /* ===== CASCADE Plus Design Tokens ===== */
+    :root {
+      --green: #047857;
+      --green-dark: #065f46;
+      --green-soft: #ecfdf5;
+      --teal: #0e7490;
+      --ink: #17212f;
+      --muted: #667085;
+      --line: #d9e0e8;
+      --soft: #f6f8fa;
+      --app-bg: #f6f8f7;
+      --panel: #ffffff;
+      --amber: #b7791f;
+      --amber-soft: #fff7e8;
+      --red: #c24132;
+      --red-soft: #fff1f0;
+      --shadow: 0 18px 44px rgba(23, 33, 47, 0.14);
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--ink);
+      background: var(--app-bg);
+    }
+
+    /* ===== TOPBAR ===== */
+    .topbar {
+      min-height: 64px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 28px;
+      padding: 0 28px;
+      color: #fff;
+      background: #111827;
+      box-shadow: 0 2px 8px rgba(6, 95, 70, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      min-width: 116px;
+      min-height: 52px;
+      justify-content: center;
+    }
+
+    .brand-name {
+      font-size: 19px;
+      font-weight: 800;
+      color: #d1fae5;
+      letter-spacing: -0.5px;
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .main-nav button {
+      min-height: 36px;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      padding: 0 16px;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #9ca3af;
+      background: transparent;
+      cursor: pointer;
+      font-family: inherit;
+      letter-spacing: 0.02em;
+      transition: color 150ms, background 150ms, border-color 150ms;
+    }
+
+    .main-nav button:hover {
+      color: #d1fae5;
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    .main-nav button.active {
+      color: #ecfdf5;
+      border-color: #0f806b;
+      background: #0b3633;
+      box-shadow: inset 0 -2px 0 #10a881;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* Notification Bell */
+    .notif-bell-wrap {
+      position: relative;
+    }
+
+    .notif-bell-btn {
+      position: relative;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 7px;
+      width: 36px;
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #9ca3af;
+      cursor: pointer;
+      transition: color 150ms, border-color 150ms, background 150ms;
+    }
+
+    .notif-bell-btn:hover {
+      color: #d1fae5;
+      border-color: rgba(52, 211, 153, 0.42);
+      background: rgba(16, 185, 129, 0.12);
+    }
+
+    .notif-bell-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .notif-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: #ef4444;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 99px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      border: 2px solid #111827;
+      line-height: 1;
+    }
+
+    /* Notification Dropdown Drawer */
+    .notif-dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      width: 380px;
+      max-width: 90vw;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: 0 20px 48px rgba(23, 33, 47, 0.22);
+      z-index: 1000;
+      color: var(--ink);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: fadeIn 0.15s ease;
+    }
+
+    .notif-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--soft);
+    }
+
+    .notif-header h3 {
+      font-size: 13px;
+      font-weight: 700;
+      margin: 0;
+      color: var(--ink);
+    }
+
+    .notif-mark-read {
+      font-size: 11px;
+      color: var(--teal);
+      background: none;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0;
+      font-family: inherit;
+    }
+
+    .notif-mark-read:hover {
+      text-decoration: underline;
+    }
+
+    .notif-list {
+      max-height: 320px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .notif-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      transition: background 120ms;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .notif-item:last-child {
+      border-bottom: none;
+    }
+
+    .notif-item:hover {
+      background: var(--soft);
+    }
+
+    .notif-item.unread {
+      background: #f0fdf4;
+    }
+
+    .notif-item-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+
+    .notif-item-icon.hit {
+      background: var(--green-soft);
+      color: var(--green);
+      border: 1px solid #a7f3d0;
+    }
+
+    .notif-item-icon.near {
+      background: var(--amber-soft);
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+
+    .notif-item-icon.alert {
+      background: var(--red-soft);
+      color: var(--red);
+      border: 1px solid #fecaca;
+    }
+
+    .notif-item-icon svg {
+      width: 17px;
+      height: 17px;
+      stroke-width: 2.2;
+      stroke: currentColor;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .notif-item-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .notif-item-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 2px;
+      line-height: 1.3;
+    }
+
+    .notif-item-desc {
+      font-size: 11.5px;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-bottom: 4px;
+    }
+
+    .notif-item-time {
+      font-size: 10px;
+      color: #9ca3af;
+      font-weight: 600;
+    }
+
+    .profile-button {
+      min-height: 36px;
+      border: 1px solid #374151;
+      border-radius: 7px;
+      padding: 0 16px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #d1fae5;
+      background: transparent;
+      cursor: pointer;
+      font-family: inherit;
+      letter-spacing: 0.5px;
+    }
+
+    /* ===== WORKSPACE ===== */
+    .workspace {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 24px 28px 60px;
+    }
+
+    /* ===== PAGE HEADING & TOP ROW ===== */
+    .page-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .heading-copy h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    /* Pill Segmented Controls (No full line) */
+    .page-tabs {
+      display: inline-flex;
+      background: #e5e9f0;
+      padding: 3px;
+      border-radius: 8px;
+      gap: 2px;
+      border: none;
+      margin-bottom: 0;
+    }
+
+    .page-tab {
+      padding: 7px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 160ms ease;
+    }
+
+    .page-tab:hover {
+      color: var(--ink);
+    }
+
+    .page-tab.active {
+      color: var(--ink);
+      background: var(--panel);
+      box-shadow: 0 1px 3px rgba(23, 33, 47, 0.1);
+      font-weight: 700;
+    }
+
+    /* ===== FILTER & CONTROLS BAR ===== */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .filter-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-select {
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 0 32px 0 12px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      color: var(--ink);
+      background: var(--panel);
+      cursor: pointer;
+      min-width: 160px;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23667085' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      transition: border-color 150ms;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(4,120,87,0.1);
+    }
+
+    .results-count {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* Frequency tag on card */
+    .freq-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 2px 8px;
+      border-radius: 99px;
+      background: var(--soft);
+      color: var(--muted);
+      border: 1px solid var(--line);
+    }
+
+    /* ===== SUMMARY STRIP ===== */
+    .summary-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .stat-pill {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 14px 18px;
+      box-shadow: 0 2px 8px rgba(23,33,47,0.05);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--ink);
+      line-height: 1;
+    }
+
+    .stat-value.green { color: var(--green); }
+    .stat-value.amber { color: #d97706; }
+
+    /* ===== TARGETS GRID ===== */
+    .targets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    /* ===== SUPPLIER CARD ===== */
+    .supplier-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      padding: 20px 22px 18px;
+      box-shadow: 0 4px 12px rgba(23,33,47,0.06);
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+
+    .supplier-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(23,33,47,0.11);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .card-supplier-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .badge-hit {
+      background: var(--green-soft);
+      color: var(--green);
+      border: 1px solid #a7f3d0;
+    }
+
+    .badge-near {
+      background: var(--amber-soft);
+      color: var(--amber);
+      border: 1px solid #fde68a;
+    }
+
+    /* Progress bar */
+    .progress-track {
+      height: 10px;
+      background: #eef1f6;
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 11px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.55s cubic-bezier(.4,0,.2,1);
+    }
+
+    .spend-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .spend-current {
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .spend-of {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .pct-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .shortfall-note {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .shortfall-note.amber { color: #d97706; font-weight: 600; }
+    .shortfall-note.green { color: var(--green); font-weight: 600; }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 64px 24px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 11px;
+    }
+
+    .empty-state svg {
+      width: 52px;
+      height: 52px;
+      stroke: #c5cdd8;
+      stroke-width: 1.5;
+      fill: none;
+      margin-bottom: 16px;
+    }
+
+    .empty-state h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 0 0 8px;
+    }
+
+    .empty-state p {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    /* ===== SETTINGS PANEL ===== */
+    .settings-panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      box-shadow: 0 4px 12px rgba(23,33,47,0.06);
+      overflow: hidden;
+    }
+
+    .settings-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .settings-header h2 {
+      font-size: 15px;
+      font-weight: 700;
+      margin: 0 0 3px;
+    }
+
+    .settings-header p {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    /* Settings table */
+    .settings-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .settings-table thead th {
+      background: linear-gradient(180deg, #d8f3e6 0%, #a9dfc6 100%);
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--green-dark);
+      padding: 11px 20px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+    }
+
+    .settings-table tbody tr {
+      border-bottom: 1px solid var(--line);
+      transition: background 120ms;
+    }
+
+    .settings-table tbody tr:last-child { border-bottom: none; }
+    .settings-table tbody tr:hover { background: #f7fbff; }
+
+    .settings-table td {
+      padding: 14px 20px;
+      font-size: 13px;
+      vertical-align: middle;
+    }
+
+    .col-no {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      width: 60px;
+    }
+
+    .sup-cell {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    /* Spend input */
+    .spend-input-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .spend-prefix {
+      position: absolute;
+      left: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .spend-input {
+      width: 140px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 0 10px 0 24px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      color: var(--ink);
+      background: var(--soft);
+      transition: border-color 150ms, background 150ms;
+      -moz-appearance: textfield;
+    }
+
+    .spend-input::-webkit-outer-spin-button,
+    .spend-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+    .spend-input:focus {
+      outline: none;
+      border-color: var(--green);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(4,120,87,0.1);
+    }
+
+    /* Frequency select */
+    .freq-select {
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 0 10px;
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--ink);
+      background: var(--soft);
+      cursor: pointer;
+      min-width: 120px;
+      transition: border-color 150ms;
+    }
+
+    .freq-select:focus {
+      outline: none;
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(4,120,87,0.1);
+    }
+
+    /* Toggle switch */
+    .toggle-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .toggle {
+      position: relative;
+      width: 38px;
+      height: 21px;
+      flex-shrink: 0;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: #d1d5db;
+      border-radius: 99px;
+      cursor: pointer;
+      transition: background 200ms;
+    }
+
+    .toggle-slider::before {
+      content: "";
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background: white;
+      border-radius: 50%;
+      left: 3px;
+      top: 3px;
+      transition: transform 200ms;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .toggle input:checked + .toggle-slider { background: var(--green); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(17px); }
+
+    .toggle-label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+      min-width: 50px;
+    }
+
+    /* Settings Section Cards & Rule Builder */
+    .settings-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .settings-subcard {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      box-shadow: 0 4px 12px rgba(23,33,47,0.06);
+      overflow: hidden;
+    }
+
+    .settings-subcard-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .settings-subcard-header h2 {
+      font-size: 15px;
+      font-weight: 700;
+      margin: 0 0 3px;
+    }
+
+    .settings-subcard-header p {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .notif-rule-row {
+      display: grid;
+      grid-template-columns: 1fr 140px 180px 100px 44px;
+      gap: 12px;
+      padding: 12px 24px;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+      background: #fff;
+    }
+
+    .notif-rule-row:last-child {
+      border-bottom: none;
+    }
+
+    .notif-rule-row.header-row {
+      background: linear-gradient(180deg, #d8f3e6 0%, #a9dfc6 100%);
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--green-dark);
+      padding: 10px 24px;
+    }
+
+    .rule-name-input, .rule-select, .rule-value-input {
+      height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0 10px;
+      font-size: 12.5px;
+      font-family: inherit;
+      color: var(--ink);
+      background: var(--soft);
+      width: 100%;
+    }
+
+    .rule-name-input:focus, .rule-select:focus, .rule-value-input:focus {
+      outline: none;
+      border-color: var(--green);
+      background: #fff;
+    }
+
+    .btn-delete-rule {
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+      border-radius: 6px;
+      color: var(--red);
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn-delete-rule:hover {
+      background: var(--red);
+      color: #fff;
+    }
+
+    .btn-add-rule {
+      margin: 14px 24px 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      font-size: 12.5px;
+      font-weight: 700;
+      border: 1px dashed var(--green);
+      color: var(--green);
+      border-radius: 7px;
+      background: var(--green-soft);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 140ms ease;
+    }
+
+    .btn-add-rule:hover {
+      background: var(--green);
+      color: #fff;
+      border-style: solid;
+    }
+
+    /* Info icon */
+    .info-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: var(--green-dark);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 800;
+      cursor: help;
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+
+    /* Settings actions */
+    .settings-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 24px;
+      border-top: 1px solid var(--line);
+      background: var(--soft);
+    }
+
+    .btn-primary {
+      height: 36px;
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 0 22px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 150ms;
+    }
+
+    .btn-primary:hover { background: var(--green-dark); }
+
+    .btn-secondary {
+      height: 36px;
+      background: #fff;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 0 18px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 150ms;
+    }
+
+    .btn-secondary:hover { background: var(--soft); }
+
+    .unsaved-label {
+      font-size: 12px;
+      color: var(--amber);
+      font-weight: 600;
+      margin-left: 4px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: #111827;
+      color: #d1fae5;
+      border-radius: 9px;
+      padding: 12px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+      transform: translateY(80px);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      z-index: 999;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* ===== CONFIRMATION MODAL ===== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 24, 39, 0.55);
+      backdrop-filter: blur(3px);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      animation: fadeIn 0.18s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .modal-box {
+      background: var(--panel);
+      border-radius: 14px;
+      padding: 36px 40px 32px;
+      max-width: 460px;
+      width: 100%;
+      box-shadow: 0 24px 64px rgba(23, 33, 47, 0.22);
+      text-align: center;
+      animation: slideUp 0.22s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    .modal-icon-wrap {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .modal-icon-wrap.green { background: var(--green-soft); }
+    .modal-icon-wrap.amber { background: var(--amber-soft); }
+
+    .modal-icon-wrap svg {
+      width: 30px;
+      height: 30px;
+      stroke-width: 2.2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--ink);
+      margin: 0 0 8px;
+    }
+
+    .modal-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0 0 22px;
+      line-height: 1.6;
+    }
+
+    .modal-points {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 28px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .modal-points li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    .modal-points li .point-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 800;
+      margin-top: 1px;
+    }
+
+    .modal-points li .point-icon.green { background: var(--green-soft); color: var(--green); }
+    .modal-points li .point-icon.amber { background: var(--amber-soft); color: var(--amber); }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .modal-actions .btn-primary,
+    .modal-actions .btn-secondary {
+      min-width: 140px;
+      height: 40px;
+      font-size: 13px;
+    }
+
+    .modal-actions .btn-primary.amber-btn { background: #d97706; }
+    .modal-actions .btn-primary.amber-btn:hover { background: var(--amber); }
+
+    /* Wireframe banner */
+    .wf-banner {
+      background: #fef3c7;
+      border-bottom: 1px solid #fde68a;
+      text-align: center;
+      padding: 7px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #92400e;
+      letter-spacing: 0.02em;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .summary-strip { grid-template-columns: repeat(2, 1fr); }
+      .workspace { padding: 20px 16px 60px; }
+      .topbar { gap: 16px; padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== TOPBAR ===== -->
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-name">CASCADE+</span>
+  </div>
+  <nav class="main-nav" aria-label="Primary">
+    <button type="button">Dashboard</button>
+    <button type="button">Order Pad</button>
+    <button type="button">Order History</button>
+    <button type="button">Reports</button>
+    <button type="button" class="active">Supplier Targets</button>
+    <button type="button">Help</button>
+  </nav>
+  <div class="topbar-right">
+    <!-- In-App Notification Bell -->
+    <div class="notif-bell-wrap">
+      <button class="notif-bell-btn" id="notifBellBtn" onclick="toggleNotifDropdown()" aria-label="Notifications" title="Supplier Target Notifications">
+        <svg viewBox="0 0 24 24">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+        <span class="notif-badge" id="notifBadge">2</span>
+      </button>
+
+      <!-- Dropdown Drawer -->
+      <div class="notif-dropdown" id="notifDropdown" hidden>
+        <div class="notif-header">
+          <h3>Supplier Notifications</h3>
+          <button class="notif-mark-read" onclick="markAllNotificationsRead()">Mark all read</button>
+        </div>
+        <div class="notif-list" id="notifList">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <button class="profile-button" type="button">HI, PHARMACY MGR</button>
+  </div>
+</header>
+
+<!-- ===== WORKSPACE ===== -->
+<main class="workspace">
+
+  <!-- Compact Top Row: Title + Segmented Switch (Zero wasted vertical space) -->
+  <div class="page-header-row">
+    <div class="heading-copy">
+      <h1>Supplier Spend Targets</h1>
+    </div>
+
+    <!-- Segmented Tab Pills -->
+    <div class="page-tabs" role="tablist" aria-label="Page sections">
+      <button class="page-tab active" role="tab" aria-selected="true"  onclick="showTab('view', this)">Spend Targets</button>
+      <button class="page-tab"        role="tab" aria-selected="false" onclick="showTab('settings', this)">Settings</button>
+    </div>
+  </div>
+
+  <!-- ======================================== -->
+  <!-- TAB: SPEND TARGETS VIEW                  -->
+  <!-- ======================================== -->
+  <div id="tab-view">
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <div class="filter-bar-left">
+        <select class="filter-select" id="freqFilter" onchange="applyFreqFilter(this.value)" aria-label="Filter by frequency">
+          <option value="all">Frequency: All</option>
+          <option value="daily">Frequency: Daily</option>
+          <option value="weekly">Frequency: Weekly</option>
+          <option value="monthly">Frequency: Monthly</option>
+        </select>
+      </div>
+      <span class="results-count" id="resultsCount"></span>
+    </div>
+
+    <!-- Summary stat strip -->
+    <div class="summary-strip">
+      <div class="stat-pill">
+        <div class="stat-label">Targets Active</div>
+        <div class="stat-value" id="statActive">—</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-label">Targets Hit</div>
+        <div class="stat-value green" id="statHit">—</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-label">Near Target (≥ 80%)</div>
+        <div class="stat-value amber" id="statNear">—</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-label">Total Spend This Period</div>
+        <div class="stat-value" id="statSpend">—</div>
+      </div>
+    </div>
+
+    <!-- Supplier progress cards -->
+    <div class="targets-grid" id="targetsGrid" aria-live="polite" aria-label="Supplier spend targets"></div>
+
+  </div>
+
+  <!-- ======================================== -->
+  <!-- TAB: SETTINGS                            -->
+  <!-- ======================================== -->
+  <div id="tab-settings" hidden>
+
+    <div class="settings-stack">
+
+      <!-- Subcard 1: Targets Configuration Table -->
+      <div class="settings-subcard">
+        <div class="settings-subcard-header">
+          <div>
+            <h2>Configure Supplier Spend Targets</h2>
+            <p>Set your contracted minimum spend amount and frequency for each supplier. Inactive targets are hidden from the Spend Targets view.</p>
+          </div>
+        </div>
+
+        <table class="settings-table" aria-label="Supplier spend target configuration">
+          <thead>
+            <tr>
+              <th class="col-no">S.No.</th>
+              <th>Supplier Name</th>
+              <th>Spend Target (£)</th>
+              <th>Frequency</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="settingsBody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Subcard 2: Custom Notification Rules Builder -->
+      <div class="settings-subcard">
+        <div class="settings-subcard-header">
+          <div>
+            <h2>In-App Notification Rules</h2>
+            <p>Configure automated in-app alerts when suppliers reach custom spend milestones, percentage thresholds, or target completions.</p>
+          </div>
+        </div>
+
+        <div class="notif-rule-row header-row">
+          <div>Rule Name / Description</div>
+          <div>Supplier</div>
+          <div>Condition / Trigger</div>
+          <div>Status</div>
+          <div>Action</div>
+        </div>
+
+        <div id="notifRulesContainer">
+          <!-- Populated by JS -->
+        </div>
+
+        <button class="btn-add-rule" type="button" onclick="addNewRule()">
+          + Add Custom Notification Rule
+        </button>
+      </div>
+
+      <!-- Settings Actions Bar -->
+      <div class="settings-panel" style="border-radius:9px; border:1px solid var(--line); overflow:hidden;">
+        <div class="settings-actions">
+          <button class="btn-primary" id="saveBtn" onclick="saveSettings()">Save Settings</button>
+          <button class="btn-secondary" onclick="discardSettings()">Discard</button>
+          <span class="unsaved-label" id="unsavedLabel" hidden>● Unsaved Changes</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</main>
+
+<!-- ===== CONFIRMATION MODAL ===== -->
+<div id="confirmModal" class="modal-backdrop" hidden aria-modal="true" role="dialog" aria-labelledby="modalTitle">
+  <div class="modal-box">
+    <div class="modal-icon-wrap" id="modalIconWrap">
+      <!-- icon injected by JS -->
+    </div>
+    <h2 class="modal-title" id="modalTitle"></h2>
+    <p class="modal-subtitle" id="modalSubtitle"></p>
+    <ul class="modal-points" id="modalPoints"></ul>
+    <div class="modal-actions">
+      <button class="btn-primary" id="modalConfirmBtn" onclick="handleModalConfirm()"></button>
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+
+<!-- ===== SCRIPT ===== -->
+<script>
+
+  /* ── SUPPLIER DEFINITIONS ── */
+  const SUPPLIERS = [
+    { id: 'aah',      name: 'AAH' },
+    { id: 'alliance', name: 'Alliance' },
+    { id: 'bns',      name: 'BNS' },
+    { id: 'clarity',  name: 'Clarity' },
+    { id: 'phoenix',  name: 'Phoenix' },
+    { id: 'sigma',    name: 'Sigma' },
+    { id: 'trident',  name: 'Trident' },
+  ];
+
+  /* ── CONFIGURABLE TARGETS (editable via Settings) ── */
+  let targets = [
+    { id: 'aah',      target: 25000, freq: 'monthly', active: true },
+    { id: 'alliance', target: 10000, freq: 'monthly', active: true },
+    { id: 'bns',      target: 15000, freq: 'monthly', active: true },
+    { id: 'clarity',  target: 8000,  freq: 'monthly', active: true },
+    { id: 'phoenix',  target: 20000, freq: 'monthly', active: true },
+    { id: 'sigma',    target: 12000, freq: 'weekly',  active: true },
+    { id: 'trident',  target: 5000,  freq: 'daily',   active: true },
+  ];
+
+  /* ── MOCK SPEND DATA ── */
+  const mockSpend = {
+    monthly: { aah: 19500, alliance: 10200, bns: 8700,  clarity: 4100, phoenix: 11000, sigma: 0,    trident: 0   },
+    weekly:  { aah: 0,     alliance: 0,     bns: 0,     clarity: 0,    phoenix: 0,     sigma: 9800, trident: 0   },
+    daily:   { aah: 0,     alliance: 0,     bns: 0,     clarity: 0,    phoenix: 0,     sigma: 0,    trident: 380 },
+  };
+
+  const periodLabels = {
+    daily:   'Today, 23 Oct 2026',
+    weekly:  'Week of 20 Oct 2026',
+    monthly: 'October 2026',
+    all:     'All Periods',
+  };
+
+  let currentFreq  = 'all';
+  let savedTargets = JSON.parse(JSON.stringify(targets)); // deep copy for discard
+
+  /* ── NOTIFICATION DATA & RULES ── */
+  let notifications = [
+    {
+      id: 1,
+      type: 'hit',
+      title: 'Target Hit: Alliance',
+      desc: 'Spent £10,200 of £10k Monthly target. Rebate tier secured!',
+      time: '15m ago',
+      unread: true
+    },
+    {
+      id: 2,
+      type: 'near',
+      title: 'Near Target: AAH (78%)',
+      desc: 'Spent £19,500 of £25k Monthly target. £5.5k remaining.',
+      time: '2h ago',
+      unread: true
+    },
+    {
+      id: 3,
+      type: 'alert',
+      title: 'Shortfall Risk: Phoenix',
+      desc: 'Only £11k spent of £20k target. Cut-off in 4 days.',
+      time: 'Yesterday',
+      unread: false
+    }
+  ];
+
+  let notifRules = [
+    {
+      id: 'rule_1',
+      name: 'Alliance Target Reached',
+      supplier: 'alliance',
+      conditionType: 'target_hit',
+      value: 100,
+      active: true
+    },
+    {
+      id: 'rule_2',
+      name: 'AAH Spend Alert',
+      supplier: 'aah',
+      conditionType: 'spend_reached',
+      value: 1000,
+      active: true
+    },
+    {
+      id: 'rule_3',
+      name: 'All Suppliers 80% Threshold',
+      supplier: 'all',
+      conditionType: 'pct_reached',
+      value: 80,
+      active: true
+    }
+  ];
+
+  let savedNotifRules = JSON.parse(JSON.stringify(notifRules));
+
+  /* ── IN-APP NOTIFICATION BELL & DROPDOWN ── */
+  function toggleNotifDropdown() {
+    const d = document.getElementById('notifDropdown');
+    d.hidden = !d.hidden;
+    if (!d.hidden) renderNotifications();
+  }
+
+  function renderNotifications() {
+    const list = document.getElementById('notifList');
+    const badge = document.getElementById('notifBadge');
+    const unreadCount = notifications.filter(n => n.unread).length;
+
+    if (unreadCount > 0) {
+      badge.textContent = unreadCount;
+      badge.hidden = false;
+    } else {
+      badge.hidden = true;
+    }
+
+    if (notifications.length === 0) {
+      list.innerHTML = `<div style="padding:24px; text-align:center; color:var(--muted); font-size:12px;">No notifications</div>`;
+      return;
+    }
+
+    list.innerHTML = notifications.map(n => {
+      let icon = '';
+      if (n.type === 'hit') {
+        // Clear Checkmark in Green circle
+        icon = `
+          <div class="notif-item-icon hit" title="Target reached">
+            <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+          </div>
+        `;
+      } else if (n.type === 'near') {
+        // Target / Flag Icon indicating approaching milestone
+        icon = `
+          <div class="notif-item-icon near" title="Approaching target milestone">
+            <svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+          </div>
+        `;
+      } else {
+        // Alert Triangle in soft Red circle indicating shortfall or cut-off warning
+        icon = `
+          <div class="notif-item-icon alert" title="Attention or shortfall notice">
+            <svg viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="notif-item ${n.unread ? 'unread' : ''}" onclick="markNotifRead(${n.id})">
+          ${icon}
+          <div class="notif-item-content">
+            <div class="notif-item-title">${n.title}</div>
+            <div class="notif-item-desc">${n.desc}</div>
+            <div class="notif-item-time">${n.time}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function markNotifRead(id) {
+    const n = notifications.find(x => x.id === id);
+    if (n) n.unread = false;
+    renderNotifications();
+  }
+
+  function markAllNotificationsRead() {
+    notifications.forEach(n => n.unread = false);
+    renderNotifications();
+    showToast('All notifications marked as read');
+  }
+
+  // Close dropdown on outside click
+  document.addEventListener('click', function(e) {
+    const wrap = document.querySelector('.notif-bell-wrap');
+    if (wrap && !wrap.contains(e.target)) {
+      document.getElementById('notifDropdown').hidden = true;
+    }
+  });
+
+  /* ── RENDER NOTIFICATION RULES TABLE ── */
+  function renderNotifRules() {
+    const container = document.getElementById('notifRulesContainer');
+    if (!container) return;
+
+    if (notifRules.length === 0) {
+      container.innerHTML = `<div style="padding:20px; text-align:center; color:var(--muted); font-size:13px;">No custom rules set. Click "+ Add Custom Notification Rule" below.</div>`;
+      return;
+    }
+
+    container.innerHTML = notifRules.map((rule, idx) => {
+      const supOptions = `
+        <option value="all" ${rule.supplier === 'all' ? 'selected' : ''}>All Suppliers</option>
+        ${SUPPLIERS.map(s => `<option value="${s.id}" ${rule.supplier === s.id ? 'selected' : ''}>${s.name}</option>`).join('')}
+      `;
+
+      let valueInput = '';
+      if (rule.conditionType === 'spend_reached') {
+        valueInput = `<div class="spend-input-wrap" style="width:100%"><span class="spend-prefix">£</span><input class="spend-input" style="width:100%; height:34px; padding-left:22px;" type="number" step="100" value="${rule.value}" onchange="handleRuleChange('${rule.id}', 'value', this.value)" /></div>`;
+      } else if (rule.conditionType === 'pct_reached') {
+        valueInput = `<div style="display:flex;align-items:center;gap:4px;"><input class="rule-value-input" style="width:65px" type="number" min="1" max="100" value="${rule.value}" onchange="handleRuleChange('${rule.id}', 'value', this.value)"/><span>%</span></div>`;
+      } else {
+        valueInput = `<span style="font-size:12px; color:var(--muted); font-weight:600;">100% of Target</span>`;
+      }
+
+      return `
+        <div class="notif-rule-row">
+          <div>
+            <input class="rule-name-input" type="text" value="${rule.name}" placeholder="e.g. Alliance Target Reached" onchange="handleRuleChange('${rule.id}', 'name', this.value)"/>
+          </div>
+          <div>
+            <select class="rule-select" onchange="handleRuleChange('${rule.id}', 'supplier', this.value)">
+              ${supOptions}
+            </select>
+          </div>
+          <div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <select class="rule-select" onchange="handleRuleChange('${rule.id}', 'conditionType', this.value)">
+                <option value="target_hit" ${rule.conditionType === 'target_hit' ? 'selected' : ''}>Target Reached (100%)</option>
+                <option value="spend_reached" ${rule.conditionType === 'spend_reached' ? 'selected' : ''}>Spend Hits Specific Amount (£)</option>
+                <option value="pct_reached" ${rule.conditionType === 'pct_reached' ? 'selected' : ''}>Spend Hits Target Percentage (%)</option>
+              </select>
+              ${valueInput}
+            </div>
+          </div>
+          <div>
+            <div class="toggle-wrap">
+              <label class="toggle" aria-label="Toggle rule ${rule.active ? 'active':'inactive'}">
+                <input type="checkbox" ${rule.active ? 'checked' : ''} onchange="handleRuleChange('${rule.id}', 'active', this.checked)" />
+                <span class="toggle-slider"></span>
+              </label>
+              <span class="toggle-label" id="lbl-${rule.id}">${rule.active ? 'Active' : 'Off'}</span>
+            </div>
+          </div>
+          <div>
+            <button class="btn-delete-rule" type="button" title="Delete rule" onclick="deleteRule('${rule.id}')">✕</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function handleRuleChange(id, field, val) {
+    const r = notifRules.find(x => x.id === id);
+    if (!r) return;
+    if (field === 'active') {
+      r.active = val;
+      const lbl = document.getElementById('lbl-' + id);
+      if (lbl) lbl.textContent = val ? 'Active' : 'Off';
+    } else if (field === 'value') {
+      r.value = Number(val);
+    } else if (field === 'conditionType') {
+      r.conditionType = val;
+      if (val === 'spend_reached' && !r.value) r.value = 1000;
+      if (val === 'pct_reached' && !r.value) r.value = 80;
+      renderNotifRules(); // Re-render to show appropriate input
+    } else {
+      r[field] = val;
+    }
+    markUnsaved();
+  }
+
+  function addNewRule() {
+    const newId = 'rule_' + Date.now();
+    notifRules.push({
+      id: newId,
+      name: 'Custom Spend Alert',
+      supplier: 'all',
+      conditionType: 'spend_reached',
+      value: 1000,
+      active: true
+    });
+    renderNotifRules();
+    markUnsaved();
+  }
+
+  function deleteRule(id) {
+    notifRules = notifRules.filter(x => x.id !== id);
+    renderNotifRules();
+    markUnsaved();
+  }
+  function fmt(n) {
+    if (n >= 1000) return '£' + (n / 1000).toFixed(n % 1000 === 0 ? 0 : 1) + 'k';
+    return '£' + n.toLocaleString();
+  }
+
+  /* ── TAB SWITCHING ── */
+  function showTab(tab, btn) {
+    document.getElementById('tab-view').hidden     = (tab !== 'view');
+    document.getElementById('tab-settings').hidden = (tab !== 'settings');
+    document.querySelectorAll('.page-tab').forEach(b => {
+      b.classList.toggle('active', b === btn);
+      b.setAttribute('aria-selected', b === btn ? 'true' : 'false');
+    });
+    if (tab === 'settings') {
+      renderSettings();
+      renderNotifRules();
+    }
+    if (tab === 'view')     renderCards();
+  }
+
+  /* ── FREQUENCY FILTER ── */
+  function applyFreqFilter(freq) {
+    currentFreq = freq;
+    renderCards();
+  }
+
+  /* ── RENDER SUPPLIER CARDS ── */
+  function renderCards() {
+    const grid   = document.getElementById('targetsGrid');
+    const count  = document.getElementById('resultsCount');
+
+    // Merge spend across all frequencies for each supplier
+    function getSpend(suppId, freq) {
+      return (mockSpend[freq] || {})[suppId] || 0;
+    }
+
+    const active = targets.filter(t =>
+      t.active && (currentFreq === 'all' || t.freq === currentFreq)
+    );
+
+    if (active.length === 0) {
+      const freqLabel = currentFreq === 'all' ? 'any frequency' : `the <strong>${currentFreq}</strong> frequency`;
+      grid.innerHTML = `
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 8v4M12 16h.01" stroke-linecap="round"/>
+          </svg>
+          <h3>No targets configured</h3>
+          <p>Go to <strong>Settings</strong> to set supplier spend targets for ${freqLabel}.</p>
+        </div>`;
+      count.textContent = '';
+      updateStats(active);
+      return;
+    }
+
+    count.textContent = `Showing ${active.length} supplier${active.length !== 1 ? 's' : ''}`;
+
+    grid.innerHTML = active.map(t => {
+      const sup  = SUPPLIERS.find(s => s.id === t.id);
+      const cur  = getSpend(t.id, t.freq);
+      const pct  = Math.min(100, Math.round((cur / t.target) * 100));
+      const hit  = pct >= 100;
+      const near = pct >= 80 && !hit;
+      const gap  = t.target - cur;
+      const freqLabel = t.freq.charAt(0).toUpperCase() + t.freq.slice(1);
+
+      // Status-based color coding (CASCADE Design System)
+      let statusColor = 'var(--teal)'; // Default on track in-progress
+      let badge = '';
+      let note = '';
+
+      if (hit) {
+        statusColor = 'var(--green)';
+        badge = `<span class="badge badge-hit">Target Hit</span>`;
+        note = `<div class="shortfall-note green">Contracted target reached</div>`;
+      } else if (near) {
+        statusColor = 'var(--amber)';
+        badge = `<span class="badge badge-near">Near Target</span>`;
+        note = `<div class="shortfall-note amber">${fmt(gap)} remaining to target</div>`;
+      } else {
+        note = `<div class="shortfall-note">${fmt(gap)} remaining to target</div>`;
+      }
+
+      return `
+        <div class="supplier-card" role="region" aria-label="${sup.name} spend target">
+          <div class="card-header">
+            <span class="card-supplier-name">${sup.name}</span>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span class="freq-tag">${freqLabel}</span>
+              ${badge}
+            </div>
+          </div>
+          <div class="progress-track" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="${sup.name} spend progress">
+            <div class="progress-fill" style="width:${pct}%; background:${statusColor};"></div>
+          </div>
+          <div class="spend-row">
+            <span class="spend-current" style="color:var(--ink)">${fmt(cur)}</span>
+            <span class="pct-label" style="color:${statusColor}">${pct}%</span>
+          </div>
+          <div class="spend-of">of ${fmt(t.target)} ${freqLabel} target</div>
+          ${note}
+        </div>`;
+    }).join('');
+
+    updateStats(active);
+  }
+
+  function updateStats(active) {
+    const getSpend = (t) => (mockSpend[t.freq] || {})[t.id] || 0;
+    const hit   = active.filter(t => getSpend(t) >= t.target).length;
+    const near  = active.filter(t => { const p = (getSpend(t)/t.target)*100; return p >= 80 && p < 100; }).length;
+    const total = active.reduce((s, t) => s + getSpend(t), 0);
+    document.getElementById('statActive').textContent = active.length;
+    document.getElementById('statHit').textContent    = hit;
+    document.getElementById('statNear').textContent   = near;
+    document.getElementById('statSpend').textContent  = active.length ? fmt(total) : '—';
+  }
+
+  /* ── RENDER SETTINGS TABLE ── */
+  function renderSettings() {
+    document.getElementById('settingsBody').innerHTML = SUPPLIERS.map((sup, i) => {
+      const t = targets.find(x => x.id === sup.id);
+      return `
+        <tr>
+          <td class="col-no">${i + 1}</td>
+          <td>
+            <span class="sup-cell">
+              ${sup.name}
+            </span>
+          </td>
+          <td>
+            <div class="spend-input-wrap">
+              <span class="spend-prefix">£</span>
+              <input class="spend-input" type="number" min="0" step="500"
+                value="${t.target || ''}"
+                placeholder="e.g. 25,000"
+                aria-label="${sup.name} spend target"
+                onchange="handleTargetChange('${sup.id}', 'target', this.value)" />
+            </div>
+          </td>
+          <td>
+            <select class="freq-select"
+              aria-label="${sup.name} frequency"
+              onchange="handleTargetChange('${sup.id}', 'freq', this.value)">
+              <option value="daily"   ${t.freq==='daily'   ? 'selected':''}>Daily</option>
+              <option value="weekly"  ${t.freq==='weekly'  ? 'selected':''}>Weekly</option>
+              <option value="monthly" ${t.freq==='monthly' ? 'selected':''}>Monthly</option>
+            </select>
+          </td>
+          <td>
+            <div class="toggle-wrap">
+              <label class="toggle" aria-label="Toggle ${sup.name} target ${t.active ? 'active':'inactive'}">
+                <input type="checkbox" ${t.active ? 'checked' : ''}
+                  onchange="handleTargetChange('${sup.id}', 'active', this.checked)" />
+                <span class="toggle-slider"></span>
+              </label>
+              <span class="toggle-label" id="lbl-${sup.id}">${t.active ? 'Active' : 'Inactive'}</span>
+            </div>
+          </td>
+        </tr>`;
+    }).join('');
+  }
+
+  function handleTargetChange(id, field, value) {
+    const t = targets.find(x => x.id === id);
+    if (!t) return;
+    if (field === 'target') t.target = Number(value);
+    if (field === 'freq')   t.freq   = value;
+    if (field === 'active') {
+      t.active = value;
+      const lbl = document.getElementById('lbl-' + id);
+      if (lbl) lbl.textContent = value ? 'Active' : 'Inactive';
+    }
+    markUnsaved();
+  }
+
+  function markUnsaved() {
+    document.getElementById('unsavedLabel').hidden = false;
+  }
+
+  /* ── MODAL ── */
+  let pendingAction = null; // 'save' or 'discard'
+
+  function saveSettings() {
+    // Count changes
+    const changed = targets.filter((t, i) => {
+      const s = savedTargets[i];
+      return t.target !== s.target || t.freq !== s.freq || t.active !== s.active;
+    });
+    const activeCount = targets.filter(t => t.active).length;
+
+    openModal({
+      type: 'save',
+      iconClass: 'green',
+      iconSvg: `<svg viewBox="0 0 24 24" stroke="#047857"><path d="M20 6 9 17l-5-5"/></svg>`,
+      title: 'Save Settings?',
+      subtitle: 'The following changes will be applied to your Supplier Spend Targets.',
+      points: [
+        { icon: '✔', iconClass: 'green', text: `<strong>${activeCount} supplier target${activeCount !== 1 ? 's' : ''}</strong> will be active and visible on the Spend Targets view.` },
+        { icon: '✔', iconClass: 'green', text: `<strong>${changed.length} change${changed.length !== 1 ? 's' : ''}</strong> will be saved — including spend amounts and frequencies.` },
+        { icon: '✔', iconClass: 'green', text: 'Inactive supplier targets will be <strong>hidden</strong> from the Spend Targets view until re-enabled.' },
+      ],
+      confirmLabel: 'Yes, Save Settings',
+      confirmClass: '',
+    });
+    pendingAction = 'save';
+  }
+
+  function discardSettings() {
+    const changed = targets.filter((t, i) => {
+      const s = savedTargets[i];
+      return t.target !== s.target || t.freq !== s.freq || t.active !== s.active;
+    });
+
+    openModal({
+      type: 'discard',
+      iconClass: 'amber',
+      iconSvg: `<svg viewBox="0 0 24 24" stroke="#b7791f"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>`,
+      title: 'Discard Changes?',
+      subtitle: 'You have unsaved changes. Discarding will revert everything back to your last saved settings.',
+      points: [
+        { icon: '!', iconClass: 'amber', text: `<strong>${changed.length} unsaved change${changed.length !== 1 ? 's' : ''}</strong> will be permanently lost.` },
+        { icon: '!', iconClass: 'amber', text: 'All spend targets, frequencies, and status toggles will revert to their <strong>previously saved values</strong>.' },
+        { icon: '!', iconClass: 'amber', text: 'This action <strong>cannot be undone</strong>.' },
+      ],
+      confirmLabel: 'Yes, Discard Changes',
+      confirmClass: 'amber-btn',
+    });
+    pendingAction = 'discard';
+  }
+
+  function openModal({ iconClass, iconSvg, title, subtitle, points, confirmLabel, confirmClass }) {
+    document.getElementById('modalIconWrap').className = `modal-icon-wrap ${iconClass}`;
+    document.getElementById('modalIconWrap').innerHTML = iconSvg;
+    document.getElementById('modalTitle').textContent  = title;
+    document.getElementById('modalSubtitle').textContent = subtitle;
+    document.getElementById('modalPoints').innerHTML   = points.map(p =>
+      `<li><span class="point-icon ${p.iconClass}">${p.icon}</span><span>${p.text}</span></li>`
+    ).join('');
+    const confirmBtn = document.getElementById('modalConfirmBtn');
+    confirmBtn.textContent = confirmLabel;
+    confirmBtn.className   = `btn-primary ${confirmClass}`;
+    document.getElementById('confirmModal').hidden = false;
+  }
+
+  function closeModal() {
+    document.getElementById('confirmModal').hidden = true;
+    pendingAction = null;
+  }
+
+  function handleModalConfirm() {
+    if (pendingAction === 'save') {
+      savedTargets = JSON.parse(JSON.stringify(targets));
+      savedNotifRules = JSON.parse(JSON.stringify(notifRules));
+      document.getElementById('unsavedLabel').hidden = true;
+      closeModal();
+      showToast('Settings saved successfully');
+      const btn = document.getElementById('saveBtn');
+      btn.textContent = 'Saved';
+      setTimeout(() => { btn.textContent = 'Save Settings'; }, 2500);
+    } else if (pendingAction === 'discard') {
+      targets = JSON.parse(JSON.stringify(savedTargets));
+      notifRules = JSON.parse(JSON.stringify(savedNotifRules));
+      document.getElementById('unsavedLabel').hidden = true;
+      closeModal();
+      renderSettings();
+      renderNotifRules();
+      showToast('Changes discarded');
+    }
+  }
+
+  // Close modal on backdrop click
+  document.getElementById('confirmModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // Close modal on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  /* ── TOAST ── */
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  /* ── INIT ── */
+  renderCards();
+  renderNotifications();
+
+</script>
+</body>
+</html>
